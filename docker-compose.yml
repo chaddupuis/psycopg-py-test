@@ -1,0 +1,34 @@
+services:
+  mskdb:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 238947239487239874239847fklajd
+      POSTGRES_PORT: 5436
+    expose:
+      - "5436"
+    ports:
+      - "5436:5436"
+    container_name: "mskdb"
+    networks:
+      - msknettest
+    command: -p 5436
+  mskpy:
+    build: .
+    command: bash -c "python create_db.py && python insert_data.py"
+    #&& tail -F /var/log/secure"
+    volumes:
+      - ./app:/app
+    ports:
+      - "8082:5000"
+    container_name: "mskpy"
+    depends_on:
+      - mskdb
+    networks:
+      - msknettest
+networks:
+  msknettest:
+    name: "msk_test_net"
+
+
